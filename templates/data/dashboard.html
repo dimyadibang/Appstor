@@ -1,0 +1,39 @@
+{% extends "data/main.html" %}
+{% block content %}
+{% include "data/status.html" %}
+
+
+
+
+            </div>
+        </div>
+        <div class="col-md">
+            <h5>LAST 5 SETORAN </h5>
+            <hr>
+            <div class="card card-body">
+
+                <table class="table table-sm">
+                    <tr>
+                        <th>Nama</th>
+                        <th>Setoran</th>
+                        <th>Time</th>
+                        <th>Remove</th>
+                    </tr>
+                    {% for datasetoran in setoran %}
+                    <tr>
+                        <td>{{ datasetoran.mahasantri }}</td>
+                        <td>{{ datasetoran.kitab }}</td>
+                        <td>{{ datasetoran.date_created|date:"l, d N Y" }}
+                            {{ datasetoran.date_created|time:"H:i:s" }}
+                        </td>
+                        <td><a href="{% url 'delete_setoran' datasetoran.id %}" class="btn btn-danger">Delete</a></td>
+        
+                        
+
+                    </tr>{% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock content%}

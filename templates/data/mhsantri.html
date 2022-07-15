@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mahasantri</title>
+</head>
+{% extends "data/main.html" %}
+{% load humanize %}
+{% load widget_tweaks %}
+<body>
+
+{% block content %}
+    <br>
+    <div class="container-fluid">
+    <h4>
+        {{ judul }}
+    </h4>
+        <div class="text-right mb-3">
+            <a href="{% url 'add-kitab-to-setoran' %}" class="btn btn-primary btn-sm">Tambah Setoran</a>
+        </div>
+        <div class="row">
+
+            <div class="col-md">
+                <div class="card card-body">
+                    <h5>Information</h5>
+                    <hr>
+                    <p>Nama: {{ mahasantri.name }}</p>
+                    <p>Jenis Kelamin: {{ mahasantri.jk }}</p>
+                    <p>Status: {{ mahasantri.status }} </p>
+                    
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-body">
+                    <h5>Halaman Setoran</h5>
+                    <hr>
+                    <h1 style="text-align: center;padding: 10px">{{ data_total_mahasantri|intword }}</h1>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col">
+                <div class="card card-body">
+                    <form method="get">
+                        <div class="row">
+                         
+
+                            <div class="col">
+                                From Date:
+                                {{ filter_data_setoran.form.tglmulai | add_class:"form-control" |attr:"type:date" }}
+                            </div>
+                            <div class="col">
+                                Until Date:
+                                {{ filter_data_setoran.form.tglakhir | add_class:"form-control" |attr:"type:date" }}
+                            </div>
+                            <div class="col mt-4">
+                                <button class="btn btn-primary" type="submit">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md">
+                <div class="card card-body">
+                    <table class="table table-sm">
+                        <tr>
+                            <th>Hal</th>
+                            <th>Awalan</th>
+                            <th>Bab</th>
+                            <th>Fashol</th>
+                            <th>Tanggal & Waktu Setor</th>
+                            <th>Delete</th>
+                        </tr>
+                        {% for tampil_setoran_mahasantri in halaman_setoran_mahasantri.object_list %}
+                            <tr>
+                                <td>{{ tampil_setoran_mahasantri.kitab.halaman }}</td>
+                                <td>{{ tampil_setoran_mahasantri.kitab.awalan }}</td>
+                                <td>{{ tampil_setoran_mahasantri.kitab.bab }}</td>
+                                <td>{{ tampil_setoran_mahasantri.kitab.fasol }}</td>
+                                <td>{{ tampil_setoran_mahasantri.date_created|date:"l, d N Y" }}
+                                    {{ tampil_setoran_mahasantri.date_created|time:"H:i:s" }}</td>
+                                <td><a href="{% url 'delete_setoran' tampil_setoran_mahasantri.id %}" class="btn btn-danger">Delete</a></td>
+                            </tr>
+                           
+                        {% endfor %}
+                        
+                    </table>
+                    <hr/>
+                    <nav>
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item {% if not previous %} disabled {% endif %}">
+                                <a class="page-link" href="{{ previous }}">Previous</a></li>
+                            {% for n in halaman_order_ustadz.paginator.page_range %}
+                                {% if halaman_order_ustadz.number == n %}
+                                    <li class="page-item active" aria>
+                                        <span class="page-link">
+                                            {{ n }}
+                                            <span class="sr-only">(current)</span>
+                                        </span>
+                                    </li>
+                                {% elif n > halaman_order_ustadz.number|add:-3 and n < halaman_order_ustadz.number|add:3 %}
+                                    <li class="page-item"><a class="page-link" href="?halaman={{ n }}">{{ n }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            <li class="page-item {% if not next %} disabled {% endif %}">
+                                <a class="page-link" href="{{ next }}">Next</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+</body>
+</html>

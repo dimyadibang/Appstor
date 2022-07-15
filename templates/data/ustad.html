@@ -1,0 +1,33 @@
+{% extends "data/main.html" %}
+{% block content %}
+
+<br>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md">
+            <h2>Halaman Data Ustadz </h2>
+            <div class="text-right mb-3">
+               <a href="{% url 'register' %}" class="btn btn-primary btn-sm">Tambah Ustad</a>
+            </div>
+            <div class="card card-body">
+    <table class="table table-sm">
+    <tr><th>Action</th>
+        <th>Ustadz</th>
+        <th>Phone</th>
+        <th>Update</th>
+        <th>Delete</th></tr>
+    {% for dataustadz in ustadz %}
+        <tr>
+        <td><a href="{% url 'ustadz' dataustadz.id %}" class="btn btn-outline-success btn-sm">View</a></td>
+        <td>{{ dataustadz.name }}</td>
+        <td>{{ dataustadz.phone }}</td>
+            <td><a href="{% url 'update_ustadz' dataustadz.id %}" class="btn btn-success">Edit</a></td>
+            <td><a href="{% url 'delete_ustadz' dataustadz.id %}" class="btn btn-danger">Delete</a></td>
+        </tr>
+{% endfor %}
+
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock content%}
