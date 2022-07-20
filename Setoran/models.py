@@ -257,8 +257,6 @@ class Kitab(models.Model):
         ('كتاب أحكام الأقضية والشهادات', 'كتاب أحكام الأقضية والشهادات'),
         ('كتاب أحكام العتق', 'كتاب أحكام العتق'),
         
-
-        
     )
     awalan = models.CharField(max_length=200, blank=True, null=True)
     halaman = models.CharField(max_length=200, blank=True, null=True, choices=HALAMAN)
@@ -272,10 +270,15 @@ class Kitab(models.Model):
 
 
 class Setoran(models.Model):
+    NILAI = (
+        ('A','A'),
+        ('B','B'),
+        ('C','C'),
+        ('D','D'),
+    )
     mahasantri = models.ForeignKey(Mahasantri, null=True, on_delete=models.SET_NULL)
     kitab = models.ForeignKey(Kitab, null=True, on_delete=models.SET_NULL)
     date_created = models.DateTimeField(auto_now_add=True, null=True)
-
-    def __str__(self):
-        # return '%s, %s' % (self.status, self.ustadz)
-        return self.mahasantri.name, self.kitab.halaman, self.kitab.awalan
+    nilai = models.CharField(max_length=200, blank=True, null=True, choices=NILAI)
+    ketengan = models.CharField(max_length=200, blank=True, null=True)
+    

@@ -23,13 +23,18 @@ class KitabSerializer(serializers.ModelSerializer):
 
 
 class SetoranSerializer(serializers.ModelSerializer):
-    date_created = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
+    date_created = serializers.DateTimeField(read_only=True, format="%Y-%m-%d %H:%M:%S")
     nama_mahasantri = serializers.SerializerMethodField(read_only=True)
     hal_kitab = serializers.SerializerMethodField(read_only=True)
 
+    #mahasantri = serializers.SerializerMethodField(write_only=True)
+    #kitab = serializers.SerializerMethodField(write_only=True)
+
     class Meta:
         model = Setoran
-        fields = ['id', 'mahasantri', 'kitab', 'date_created', 'nama_mahasantri', 'hal_kitab', ]
+        fields = ['id', 'mahasantri', 'kitab', 'date_created','nilai','ketengan', 'nama_mahasantri', 'hal_kitab', ]
+
+
 
     def get_nama_mahasantri(self, obj):
         return {
@@ -38,11 +43,11 @@ class SetoranSerializer(serializers.ModelSerializer):
 
     def get_hal_kitab(self, obj):
         return {
-            "halaman": obj.kitab.halaman
+            "halaman": obj.kitab.halaman,
+            "awalan": obj.kitab.awalan
         }
+
     
-
-
 ###
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
