@@ -19,6 +19,7 @@ from Setoran.views import profile_page, contact_page
 from django.conf.urls.static import static
 from django.conf import settings
 from django.urls import path, include
+from rest_framework.authtoken import views
 
 
 urlpatterns = [

@@ -1,6 +1,7 @@
 from Setoran.models import Mahasantri, Ustadz, Kitab, Setoran
 from rest_framework import serializers
 from django.contrib.auth.models import User, Group
+#from django.contrib.authtoken.models import Tokenproxy
 from datetime import datetime
 
 
@@ -59,3 +60,8 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group
         fields = ['url', 'name']
+
+#class CustomAuthTokenSerializer(serializers.HyperlinkedModelSerializer):
+ #   class Meta:
+  #      model = Token
+   #     fields = '__all__'
