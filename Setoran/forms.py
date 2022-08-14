@@ -5,6 +5,8 @@ from .models import Ustadz, Setoran, Kitab, Mahasantri
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
+from django.core.exceptions import ValidationError
+
 
 class UstadzForm(ModelForm):
     class Meta:
@@ -23,10 +25,11 @@ class SetoranForm(ModelForm):
     class Meta:
         model = Setoran
         fields = ('mahasantri', 'kitab')
+    
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['kitab'].queryset = Kitab.objects.all()
+        self.fields['kitab'].label = 'Pilih Kitab'
 
 
 

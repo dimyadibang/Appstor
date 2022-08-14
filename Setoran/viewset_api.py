@@ -17,7 +17,34 @@ from rest_framework import authentication, permissions
 class UstadzViewSet(viewsets.ModelViewSet):
     queryset = Ustadz.objects.all()
     serializer_class = UstadzSerializer
-    
+
+    #authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['user']
+
+
+#class UstadzPhotoViewSet(viewsets.ModelViewSet):
+
+    def post(self, request, format=None):
+        try:
+            # exist then update
+            profile = Ustadz.objects.get(user=request.user)
+            serializer = UstadzSerializer(ustadz, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            else:
+                return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+        except Ustadz.DoesNotExist:
+            # not exist then create
+            serializer = UstadzSerializer(data=param)
+            if serializer.is_valid():
+                serializer.save(user=request.user)
+                return Response(serializer.data)
+            else:
+                return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
 class MahasantriViewSet(viewsets.ModelViewSet):
     queryset = Mahasantri.objects.all()
     serializer_class = MahasantriSerializer
@@ -27,6 +54,7 @@ class KitabViewSet(viewsets.ModelViewSet):
     queryset = Kitab.objects.all()
     serializer_class = KitabSerializer
     
+    
 
 class SetoranViewSet(viewsets.ModelViewSet):
     queryset = Setoran.objects.all()
@@ -35,6 +63,7 @@ class SetoranViewSet(viewsets.ModelViewSet):
     
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['mahasantri', 'kitab']
+
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -93,5 +122,5 @@ class CustomAuthToken(ObtainAuthToken):
             'token': token.key,
             'user_id': user.pk,
             'email': user.email,
-            
+
         })

@@ -17,6 +17,7 @@ router.register('setoran', SetoranViewSet)
 router.register('users', UserViewSet)
 router.register('groups', GroupViewSet)
 
+#router.register('ustadzphoto', UstadzPhotoViewSet)
 #router.register('list-users', ListUsers)
 
 
@@ -49,7 +50,6 @@ urlpatterns = [
     path('kitab/', views.add_kitab_to_setoran, name='add-kitab-to-setoran'),
     path('delete_setoran/<str:pk>', views.deleteSetoran, name='delete_setoran'),
     # path('kitab/<int:pk>', views.add_to_setoran,name='add-to-cart'),
-
     # path('kitab/setorkan', views.check_mychecklist, name='check_mychecklist'),
 
 ]

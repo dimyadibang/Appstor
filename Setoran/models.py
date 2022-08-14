@@ -1,3 +1,5 @@
+from msilib.schema import Class
+from xml.dom import ValidationErr
 from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
@@ -15,26 +17,15 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
         Token.objects.create(user=instance)
 
 class Ustadz(models.Model):
-    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, null=True,  on_delete=models.CASCADE)
     name = models.CharField(max_length=200, blank=True, null=True)
     phone = models.CharField(max_length=200, blank=True, null=True)
     email = models.CharField(max_length=200, blank=True, null=True)
     date_created = models.DateTimeField(auto_now_add=True, null=True)
-    profile_pic = models.ImageField(default='fotokosong.jpg',null=True, blank=True,)
 
     def __str__(self):
         return self.name
 
-    def save(self):
-        super(Ustadz, self).save()
- 
-        img = Image.open(self.profile_pic.path)
-        img.delete()
-        if img.height > 300 or img.width > 300:
-            output_size = (300, 300)
-            img.thumbnail(output_size)
-            img.delete()
-            img.save()
 
 
 class Mahasantri(models.Model):
@@ -285,9 +276,10 @@ class Setoran(models.Model):
         ('C','C'),
         ('D','D'),
     )
+    
     mahasantri = models.ForeignKey(Mahasantri, null=True, on_delete=models.SET_NULL)
     kitab = models.ForeignKey(Kitab, null=True, on_delete=models.SET_NULL)
     date_created = models.DateTimeField(auto_now_add=True, null=True)
     nilai = models.CharField(max_length=200, blank=True, null=True, choices=NILAI)
     ketengan = models.CharField(max_length=200, blank=True, null=True)
-    
+        
