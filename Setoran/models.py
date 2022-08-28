@@ -11,6 +11,9 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
+from django.db import models
+from django.core.exceptions import ValidationError
+
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
@@ -258,6 +261,8 @@ class Kitab(models.Model):
         ('كتاب أحكام العتق', 'كتاب أحكام العتق'),
         
     )
+    
+            
     awalan = models.CharField(max_length=200, blank=True, null=True)
     halaman = models.CharField(max_length=200, blank=True, null=True, choices=HALAMAN)
     fasol = models.CharField(max_length=200, blank=True, null=True, choices=FASOL)
@@ -281,5 +286,19 @@ class Setoran(models.Model):
     kitab = models.ForeignKey(Kitab, null=True, on_delete=models.SET_NULL)
     date_created = models.DateTimeField(auto_now_add=True, null=True)
     nilai = models.CharField(max_length=200, blank=True, null=True, choices=NILAI)
-    ketengan = models.CharField(max_length=200, blank=True, null=True)
-        
+    catatan = models.CharField(max_length=200, blank=True, null=True)
+    lulus = models.BooleanField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+      
+        if self.nilai == "A":
+            self.lulus = True
+        elif self.nilai == "B":
+            self.lulus = True
+        elif self.nilai == "C":
+            self.lulus = True
+        else:
+            self.lulus = False
+       
+    

@@ -9,7 +9,7 @@ admin.site.register(Kitab)
 
 @admin.register(Setoran)
 class Setoran(admin.ModelAdmin):
-    list_display = ['id', 'mahasantri', 'kitab', 'date_created','nilai','ketengan'  ]
+    list_display = ['id', 'mahasantri', 'kitab', 'date_created','nilai','lulus'  ]
     list_filter = ['mahasantri']
     
 

@@ -1,6 +1,7 @@
 from asyncore import write
 from contextlib import nullcontext
 from email import message
+import json
 from multiprocessing.dummy import Value
 from pickle import NONE, TRUE
 from wsgiref.validate import validator
@@ -38,42 +39,66 @@ class KitabSerializer(serializers.ModelSerializer):
 
 class SetoranSerializer(serializers.ModelSerializer):
     date_created = serializers.DateTimeField(read_only=True, format="%Y-%m-%d %H:%M:%S")
-    nama_mahasantri = serializers.SerializerMethodField(read_only=True)
-    hal_kitab = serializers.SerializerMethodField(read_only=True)
-
-    #mahasantri = serializers.SerializerMethodField()
-    #kitab = serializers.DjangoModelField(validators=[validators.validate_kitab,validators.uniqueSetoran])
+    detail_mahasantri = serializers.SerializerMethodField(read_only=True)
+    detail_kitab = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Setoran
-        fields = ['id', 'mahasantri', 'kitab', 'date_created','nilai','ketengan', 'nama_mahasantri', 'hal_kitab', ]
-
-        
-        
-         
-            
-
-
-    def get_nama_mahasantri(self, obj):
+        fields = ['id', 'mahasantri', 'kitab', 'date_created','nilai','catatan','lulus', 'detail_mahasantri', 'detail_kitab', ]
+     
+    def get_detail_mahasantri(self, obj):
+    
         return {
+            "id": obj.mahasantri.id,
             "name": obj.mahasantri.name
         }
 
-    def get_hal_kitab(self, obj):
+    def get_detail_kitab(self, obj):
         return {
+            "id": obj.kitab.id,
             "halaman": obj.kitab.halaman,
             "awalan": obj.kitab.awalan
         }
     
     
- 
-    def validate(self, data):
+class PostSetoranSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Setoran
+        fields = ['id', 'mahasantri', 'kitab', 'date_created','nilai','catatan','lulus', ]
+
+    def create(self, data):
         formsantri = data['mahasantri']
         formkitab = data['kitab']
-        kitab_qs = Setoran.objects.filter(mahasantri=formsantri,kitab=formkitab)
+        lulus = data['lulus']
+        kitab_qs = Setoran.objects.filter(mahasantri=formsantri,kitab=formkitab,lulus=lulus)
         if kitab_qs.exists():
             raise serializers.ValidationError("Kalimat ini telah di setorkan")
         return data
+    
+    def validate_mahasantri(self, value):
+        if value == None:
+            raise serializers.ValidationError("Tidak Boleh Kosong")
+        return value
+    def validate_kitab(self, value):
+        if value == None:
+            raise serializers.ValidationError("Tidak Boleh Kosong")
+        return value
+
+
+class UpdateSetoranSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Setoran
+        fields = ['id', 'mahasantri', 'kitab', 'date_created','nilai','catatan','lulus', ]
+
+    def validate_mahasantri(self, value):
+        if value == None:
+            raise serializers.ValidationError("Tidak Boleh Kosong")
+        return value
+    def validate_kitab(self, value):
+        if value == None:
+            raise serializers.ValidationError("Tidak Boleh Kosong")
+        return value
+    
 
 
     

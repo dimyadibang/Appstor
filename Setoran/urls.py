@@ -12,12 +12,12 @@ router = routers.DefaultRouter()
 router.register('ustadz', UstadzViewSet)
 router.register('mahasantri', MahasantriViewSet)
 router.register('kitab', KitabViewSet)
-router.register('setoran', SetoranViewSet)
+#router.register('setoran', SetoranViewSet)
 
 router.register('users', UserViewSet)
 router.register('groups', GroupViewSet)
 
-#router.register('ustadzphoto', UstadzPhotoViewSet)
+#router.register('postsetoran', PostSetoranViewSet)
 #router.register('list-users', ListUsers)
 
 
@@ -28,9 +28,15 @@ urlpatterns = [
 
 
     path('api/', include(router.urls)),
-  #  path('api/list-users/',ListUsers.as_view),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api-token-auth/', CustomAuthToken.as_view()),
+
+    path('api/setoran_create/',setoran_create_view),
+    path('api/setoran_list/',setoran_list_view),
+    path('api/setoran_list/<int:pk>/',setoran_list_detail_view),
+    path('api/setoran_list/<int:pk>/update/',setoran_detail_update),
+    path('api/setoran_list/<int:pk>/delete/',setoran_detail_delete),
+    path('api/setoran_add_view/',setoran_add_view),
 
     path('', views.home, name='home'),
     path('ustadz/', views.ustad, name='ustad'),

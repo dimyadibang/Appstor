@@ -1,7 +1,10 @@
 
 
+from typing import Generic
+from xml.dom import ValidationErr
+from Setoran import serializers
 from Setoran.models import Mahasantri, Ustadz, Kitab, Setoran
-from Setoran.serializers import UstadzSerializer, MahasantriSerializer, KitabSerializer, SetoranSerializer, UserSerializer, GroupSerializer
+from Setoran.serializers import *
 from rest_framework import viewsets
 from rest_framework import permissions
 from django.contrib.auth.models import User, Group
@@ -12,6 +15,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import authentication, permissions
+
+from rest_framework import generics
 
 
 class UstadzViewSet(viewsets.ModelViewSet):
@@ -54,15 +59,51 @@ class KitabViewSet(viewsets.ModelViewSet):
     queryset = Kitab.objects.all()
     serializer_class = KitabSerializer
     
-    
 
-class SetoranViewSet(viewsets.ModelViewSet):
+class SetoranCreateAPIView(generics.CreateAPIView):
+    queryset = Setoran.objects.all()
+    serializer_class = PostSetoranSerializer
+setoran_create_view = SetoranCreateAPIView.as_view()
+
+class SetoranListAPIView(generics.ListAPIView):
     queryset = Setoran.objects.all()
     serializer_class = SetoranSerializer
 
-    
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['mahasantri', 'kitab']
+    filterset_fields = ['mahasantri', 'kitab', 'lulus']
+
+setoran_list_view = SetoranListAPIView.as_view()
+
+
+class SetoranDetailAPIView(generics.RetrieveAPIView):
+    queryset = Setoran.objects.all()
+    serializer_class = SetoranSerializer
+
+setoran_list_detail_view = SetoranDetailAPIView.as_view()
+
+
+class SetoranUpdateAPIView(generics.UpdateAPIView):
+    queryset = Setoran.objects.all()
+    serializer_class = UpdateSetoranSerializer
+    lookup_field = "pk"
+
+setoran_detail_update = SetoranUpdateAPIView.as_view()
+
+class SetoranDestroyAPIView(generics.DestroyAPIView):
+    queryset = Setoran.objects.all()
+    serializer_class = SetoranSerializer
+    lookup_field = "pk"
+
+setoran_detail_delete = SetoranDestroyAPIView.as_view()
+
+class KitabAddListAPIView(generics.ListAPIView):
+    queryset = Setoran.objects.all()
+    serializer_class = SetoranSerializer
+
+    queryset = Kitab.objects.all()
+    serializer_class = KitabSerializer
+
+setoran_add_view = KitabAddListAPIView.as_view()
 
 
 
@@ -84,28 +125,6 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-#from rest_framework.views import APIView
-#from rest_framework.response import Response
-#from rest_framework import authentication, permissions
-#from django.contrib.auth.models import User
-
-#class ListUsers(APIView):
-    """
-    View to list all users in the system.
-
-    * Requires token authentication.
-    * Only admin users are able to access this view.
-    """
- #   authentication_classes = [authentication.TokenAuthentication]
-  #  permission_classes = [permissions.IsAdminUser]
-
-   # def get(self, request, format=None):
-  #      """
-   #     Return a list of all users.
-    #    """
-    #    usernames = [user.username for user in User.objects.all()]
-     #   return Response(usernames)
-
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -124,3 +143,5 @@ class CustomAuthToken(ObtainAuthToken):
             'email': user.email,
 
         })
+
+
