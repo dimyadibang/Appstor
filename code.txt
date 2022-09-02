@@ -1,0 +1,29 @@
+""" @api_view(['GET'])
+def ListSetoran(request, *args, **kwargs):
+    model = Setoran.objects.all()
+    serializer = DateSerializer(model, many=True)
+    return Response(serializer.data) """
+
+import django_filters.rest_framework
+from django.db.models import OuterRef, Subquery, Count
+from django.http import JsonResponse
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+@api_view(['GET'])
+def ListSetoran(request, *args, **kwargs):
+    model = Setoran.objects.all()
+    model_view = model.values()
+
+    return Response({
+        'Kategori': model_view
+    })
+
+result =[]
+    for i in itertools.groupby(Setoran.objects.values('mahasantri')):
+        
+        result.append(i)
+    
+    return Response(result)
+
+model= Setoran.objects.values('date_created').annotate(Count('mahasantri'))

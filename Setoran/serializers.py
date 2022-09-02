@@ -11,12 +11,6 @@ from django.forms import NullBooleanField, NullBooleanSelect
 from Setoran.models import Mahasantri, Ustadz, Kitab, Setoran
 from rest_framework import serializers
 from django.contrib.auth.models import User, Group
-#from django.contrib.authtoken.models import Tokenproxy
-from datetime import datetime
-
-from Setoran.views import mahasantri
-
-from . import validators
 
 
 class UstadzSerializer(serializers.ModelSerializer):
@@ -38,13 +32,14 @@ class KitabSerializer(serializers.ModelSerializer):
 
 
 class SetoranSerializer(serializers.ModelSerializer):
-    date_created = serializers.DateTimeField(read_only=True, format="%Y-%m-%d %H:%M:%S")
+    date_created = serializers.DateField(read_only=True, format="%Y-%m-%d")
+    time_created = serializers.TimeField(read_only=True, format="%H:%M:%S")
     detail_mahasantri = serializers.SerializerMethodField(read_only=True)
     detail_kitab = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Setoran
-        fields = ['id', 'mahasantri', 'kitab', 'date_created','nilai','catatan','lulus', 'detail_mahasantri', 'detail_kitab', ]
+        fields = ['id', 'mahasantri', 'kitab','nilai','catatan','lulus', 'date_created', 'time_created' ,'detail_mahasantri', 'detail_kitab', ]
      
     def get_detail_mahasantri(self, obj):
     
@@ -98,11 +93,8 @@ class UpdateSetoranSerializer(serializers.ModelSerializer):
         if value == None:
             raise serializers.ValidationError("Tidak Boleh Kosong")
         return value
-    
 
-
-    
-    
+   
 ###
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

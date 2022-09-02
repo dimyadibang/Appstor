@@ -12,3 +12,13 @@ class SetoranFilter(django_filters.FilterSet):
         model = Setoran
         fields = '__all__'
         exclude = ['mahasantri', 'date_created']
+
+class SetoranFilterAll(django_filters.FilterSet):
+    tglmulai = DateFilter(field_name="date_created", lookup_expr='gte')
+    tglakhir = DateFilter(field_name="date_created", lookup_expr='lte')
+    note = CharFilter(field_name="note", lookup_expr='icontains')
+
+    class Meta:
+        model = Setoran
+        fields = '__all__'
+        exclude = ['date_created']

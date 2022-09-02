@@ -11,5 +11,7 @@ admin.site.register(Kitab)
 class Setoran(admin.ModelAdmin):
     list_display = ['id', 'mahasantri', 'kitab', 'date_created','nilai','lulus'  ]
     list_filter = ['mahasantri']
+
+    
     
 

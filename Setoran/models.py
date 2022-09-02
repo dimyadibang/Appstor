@@ -1,8 +1,9 @@
-from msilib.schema import Class
+
+from email import message
 from xml.dom import ValidationErr
 from django.db import models
 from django.contrib.auth.models import User
-from PIL import Image
+
 
 
 # Create your models here.
@@ -284,10 +285,11 @@ class Setoran(models.Model):
     
     mahasantri = models.ForeignKey(Mahasantri, null=True, on_delete=models.SET_NULL)
     kitab = models.ForeignKey(Kitab, null=True, on_delete=models.SET_NULL)
-    date_created = models.DateTimeField(auto_now_add=True, null=True)
     nilai = models.CharField(max_length=200, blank=True, null=True, choices=NILAI)
     catatan = models.CharField(max_length=200, blank=True, null=True)
     lulus = models.BooleanField()
+    time_created = models.TimeField(auto_now_add=True, null=True,)
+    date_created = models.DateField(auto_now_add=True, null=True,)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -300,5 +302,4 @@ class Setoran(models.Model):
             self.lulus = True
         else:
             self.lulus = False
-       
-    
+      

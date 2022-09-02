@@ -54,6 +54,8 @@ def home(request):
     total_mhs = list_mhs.count()
     
     list_setoran = Setoran.objects.all()
+   
+      
     # total_orders = list_setoran.count()
     # delivered = list_setoran.filter(status='Delivered').count()
     # pending = list_setoran.filter(status='Pending ').count()
@@ -65,6 +67,7 @@ def home(request):
         'mahasantri': total_mhs,
         
         'setoran': list_setoran,
+        
         # 'data_total_orders': total_orders,
         # 'data_delivered': delivered,
 
@@ -300,3 +303,4 @@ def accountSetting(request):
         'formustadz': form
     }
     return render(request, 'data/account_setting.html', context)
+

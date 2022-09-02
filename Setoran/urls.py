@@ -38,6 +38,9 @@ urlpatterns = [
     path('api/setoran_list/<int:pk>/delete/',setoran_detail_delete),
     path('api/setoran_add_view/',setoran_add_view),
 
+    path('api/setoran_date/', ListSetoran.as_view()),
+    path('api/setoran_date/<int:filter>/', ListSetoranMSantri),
+
     path('', views.home, name='home'),
     path('ustadz/', views.ustad, name='ustad'),
     path('ustadz/<str:pk>', views.ustadz, name='ustadz'),

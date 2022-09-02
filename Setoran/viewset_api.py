@@ -1,8 +1,17 @@
 
 
+import http
+from http.client import HTTPResponse
+import itertools
+from sys import api_version
 from typing import Generic
+from unittest import result
+from urllib import response
 from xml.dom import ValidationErr
+from xmlrpc.client import _datetime_type
 from Setoran import serializers
+from Setoran import models
+from Setoran.filters import SetoranFilter, SetoranFilterAll
 from Setoran.models import Mahasantri, Ustadz, Kitab, Setoran
 from Setoran.serializers import *
 from rest_framework import viewsets
@@ -70,7 +79,7 @@ class SetoranListAPIView(generics.ListAPIView):
     serializer_class = SetoranSerializer
 
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['mahasantri', 'kitab', 'lulus']
+    filterset_fields = ['mahasantri', 'kitab', 'lulus','date_created']
 
 setoran_list_view = SetoranListAPIView.as_view()
 
@@ -104,7 +113,6 @@ class KitabAddListAPIView(generics.ListAPIView):
     serializer_class = KitabSerializer
 
 setoran_add_view = KitabAddListAPIView.as_view()
-
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -144,4 +152,30 @@ class CustomAuthToken(ObtainAuthToken):
 
         })
 
+from django.db.models import Count
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
+from rest_framework.views import APIView
+
+class ListSetoran(APIView):
+    """
+    API endpoint data count semua mahasantri di setiap tanggal.
+    """
+    def get(request, *args, **kwargs):
+        model= Setoran.objects.values('date_created').annotate(Count('mahasantri'))
+        return Response(model)
+
+
+from rest_framework.permissions import *
+from rest_framework.decorators import *
+@api_view(['GET'])
+#@authentication_classes([authentication.TokenAuthentication])
+#@permission_classes ([IsAuthenticated])
+def ListSetoranMSantri(request, filter,*args, **kwargs,):
+    
+    """
+    API endpoint data count mahasantri di setiap tanggal.
+    """
+    model= Setoran.objects.filter(mahasantri=filter).values('date_created').annotate(Count('mahasantri'))
+    return Response(model)  
