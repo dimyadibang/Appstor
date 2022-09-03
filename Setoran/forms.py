@@ -5,8 +5,6 @@ from .models import Ustadz, Setoran, Kitab, Mahasantri
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from django.core.exceptions import ValidationError
-
 
 class UstadzForm(ModelForm):
     class Meta:
@@ -32,10 +30,6 @@ class SetoranForm(ModelForm):
         self.fields['kitab'].label = 'Pilih Kitab'
 
 
-
-
-
-
 class RegisterForm(UserCreationForm):
     email = forms.EmailField()
 
@@ -50,20 +44,3 @@ class UstadzForm(ModelForm):
         fields = '__all__'
         exclude = ['user']
 
-
-""""
-class OrderForm(ModelForm):
-    class Meta:
-        model = Order
-        fields = '__all__'
-"""
-
-
-# creating a Setoran
-class AddSetoranForm(forms.ModelForm):
-    class Meta:
-        model = Setoran
-        fields = ('mahasantri', 'kitab',)
-        widgets = {
-            'mahasantri': forms.HiddenInput,
-        }

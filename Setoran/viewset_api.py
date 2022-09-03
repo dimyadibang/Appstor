@@ -1,17 +1,3 @@
-
-
-import http
-from http.client import HTTPResponse
-import itertools
-from sys import api_version
-from typing import Generic
-from unittest import result
-from urllib import response
-from xml.dom import ValidationErr
-from xmlrpc.client import _datetime_type
-from Setoran import serializers
-from Setoran import models
-from Setoran.filters import SetoranFilter, SetoranFilterAll
 from Setoran.models import Mahasantri, Ustadz, Kitab, Setoran
 from Setoran.serializers import *
 from rest_framework import viewsets
@@ -37,27 +23,6 @@ class UstadzViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['user']
 
-
-#class UstadzPhotoViewSet(viewsets.ModelViewSet):
-
-    def post(self, request, format=None):
-        try:
-            # exist then update
-            profile = Ustadz.objects.get(user=request.user)
-            serializer = UstadzSerializer(ustadz, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            else:
-                return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
-        except Ustadz.DoesNotExist:
-            # not exist then create
-            serializer = UstadzSerializer(data=param)
-            if serializer.is_valid():
-                serializer.save(user=request.user)
-                return Response(serializer.data)
-            else:
-                return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 class MahasantriViewSet(viewsets.ModelViewSet):
     queryset = Mahasantri.objects.all()

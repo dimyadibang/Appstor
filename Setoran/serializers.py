@@ -1,13 +1,3 @@
-from asyncore import write
-from contextlib import nullcontext
-from email import message
-import json
-from multiprocessing.dummy import Value
-from pickle import NONE, TRUE
-from wsgiref.validate import validator
-from xml.etree.ElementTree import fromstring
-
-from django.forms import NullBooleanField, NullBooleanSelect
 from Setoran.models import Mahasantri, Ustadz, Kitab, Setoran
 from rest_framework import serializers
 from django.contrib.auth.models import User, Group
@@ -107,7 +97,4 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         model = Group
         fields = ['url', 'name']
 
-#class CustomAuthTokenSerializer(serializers.HyperlinkedModelSerializer):
- #   class Meta:
-  #      model = Token
-   #     fields = '__all__'
+
