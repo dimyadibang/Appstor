@@ -41,6 +41,8 @@ urlpatterns = [
     path('api/setoran_date/', ListSetoran.as_view()),
     path('api/setoran_date/<int:filter>/', ListSetoranMSantri),
 
+    path('api/setoran_lima/', ListLimaSetoran.as_view()),
+
     path('', views.home, name='home'),
     path('ustadz/', views.ustad, name='ustad'),
     path('ustadz/<str:pk>', views.ustadz, name='ustadz'),

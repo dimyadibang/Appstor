@@ -128,7 +128,7 @@ class ListSetoran(APIView):
     API endpoint data count semua mahasantri di setiap tanggal.
     """
     def get(request, *args, **kwargs):
-        model= Setoran.objects.values('date_created').annotate(Count('mahasantri'))
+        model= Setoran.objects.values('date_created').annotate(Count('mahasantri')).all()
         return Response(model)
 
 
@@ -143,4 +143,10 @@ def ListSetoranMSantri(request, filter,*args, **kwargs,):
     API endpoint data count mahasantri di setiap tanggal.
     """
     model= Setoran.objects.filter(mahasantri=filter).values('date_created').annotate(Count('mahasantri'))
+    
     return Response(model)  
+
+
+class ListLimaSetoran(generics.ListAPIView):
+    queryset = Setoran.objects.all().order_by('-id')[:5]
+    serializer_class = SetoranSerializer

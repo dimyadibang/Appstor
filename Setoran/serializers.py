@@ -1,3 +1,5 @@
+from dataclasses import field
+from unicodedata import name
 from Setoran.models import Mahasantri, Ustadz, Kitab, Setoran
 from rest_framework import serializers
 from django.contrib.auth.models import User, Group
@@ -22,7 +24,7 @@ class KitabSerializer(serializers.ModelSerializer):
 
 
 class SetoranSerializer(serializers.ModelSerializer):
-    date_created = serializers.DateField(read_only=True, format="%Y-%m-%d")
+    date_created = serializers.DateField(read_only=True, format="%d-%m-%Y")
     time_created = serializers.TimeField(read_only=True, format="%H:%M:%S")
     detail_mahasantri = serializers.SerializerMethodField(read_only=True)
     detail_kitab = serializers.SerializerMethodField(read_only=True)
@@ -47,18 +49,33 @@ class SetoranSerializer(serializers.ModelSerializer):
     
     
 class PostSetoranSerializer(serializers.ModelSerializer):
+    lulus = serializers.BooleanField(default=False)
     class Meta:
         model = Setoran
-        fields = ['id', 'mahasantri', 'kitab', 'date_created','nilai','catatan','lulus', ]
+        fields = ['id', 'mahasantri', 'kitab','time_created', 'date_created','nilai','catatan','lulus', ]
 
-    def create(self, data):
+    def validate(self, data):
         formsantri = data['mahasantri']
         formkitab = data['kitab']
         lulus = data['lulus']
         kitab_qs = Setoran.objects.filter(mahasantri=formsantri,kitab=formkitab,lulus=lulus)
         if kitab_qs.exists():
             raise serializers.ValidationError("Kalimat ini telah di setorkan")
+
+        
+        if data['nilai'] == "A":
+            data['lulus'] = True
+        elif data['nilai'] == "B":
+            data['lulus'] = True
+        elif data['nilai'] == "C":
+            data['lulus'] = True
+        else:
+            data['lulus'] = False
+        
         return data
+        
+
+        
     
     def validate_mahasantri(self, value):
         if value == None:
@@ -71,9 +88,23 @@ class PostSetoranSerializer(serializers.ModelSerializer):
 
 
 class UpdateSetoranSerializer(serializers.ModelSerializer):
+    date_created = serializers.DateField(read_only=True, format="%Y-%m-%d")
     class Meta:
         model = Setoran
         fields = ['id', 'mahasantri', 'kitab', 'date_created','nilai','catatan','lulus', ]
+
+    def validate(self, data):
+        
+        if data['nilai'] == "A":
+            data['lulus'] = True
+        elif data['nilai'] == "B":
+            data['lulus'] = True
+        elif data['nilai'] == "C":
+            data['lulus'] = True
+        else:
+            data['lulus'] = False
+        
+        return data 
 
     def validate_mahasantri(self, value):
         if value == None:
