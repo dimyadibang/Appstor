@@ -1,3 +1,4 @@
+from multiprocessing.sharedctypes import Value
 from Setoran.models import Mahasantri, Ustadz, Kitab, Setoran
 from Setoran.serializers import *
 from rest_framework import viewsets
@@ -30,6 +31,7 @@ class MahasantriViewSet(viewsets.ModelViewSet):
     
 
 class KitabViewSet(viewsets.ModelViewSet):
+    setoran = Setoran.objects.values('id')
     queryset = Kitab.objects.all()
     serializer_class = KitabSerializer
     
@@ -51,7 +53,7 @@ setoran_list_view = SetoranListAPIView.as_view()
 
 class SetoranDetailAPIView(generics.RetrieveAPIView):
     queryset = Setoran.objects.all()
-    serializer_class = SetoranSerializer
+    serializer_class = DetailSetoranSerializer
 
 setoran_list_detail_view = SetoranDetailAPIView.as_view()
 
@@ -69,15 +71,6 @@ class SetoranDestroyAPIView(generics.DestroyAPIView):
     lookup_field = "pk"
 
 setoran_detail_delete = SetoranDestroyAPIView.as_view()
-
-class KitabAddListAPIView(generics.ListAPIView):
-    queryset = Setoran.objects.all()
-    serializer_class = SetoranSerializer
-
-    queryset = Kitab.objects.all()
-    serializer_class = KitabSerializer
-
-setoran_add_view = KitabAddListAPIView.as_view()
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -150,3 +143,29 @@ def ListSetoranMSantri(request, filter,*args, **kwargs,):
 class ListLimaSetoran(generics.ListAPIView):
     queryset = Setoran.objects.all().order_by('-id')[:5]
     serializer_class = SetoranSerializer
+
+
+from datetime import *
+from django.http import JsonResponse
+
+
+def SetoranNowDay(request,str, *args, **kwargs):
+    hari = date.today
+    str.hari
+     #= Setoran.objects.all().order_by("?").datetimes(date.today)
+    #setoran=Setoran.objects.count()
+    #model= Setoran.objects.filter(date_created=self.date_created).count()
+    model= Setoran.objects.filter(date_created=str).values('date_created').annotate(Count('mahasantri'))
+    return Response(model)
+
+@api_view(['GET'])
+def KitabAddListAPIView(request,pk, *args, **kwargs,):
+    setoran= Setoran.objects.filter(mahasantri=pk , lulus=True).values()
+    ids = setoran.values_list('kitab',flat= True)
+    kitab= Kitab.objects.exclude(id__in=ids).values()
+   # lulus= setoran.filter(lulus=True)
+
+    return Response(kitab)
+
+    
+   

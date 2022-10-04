@@ -23,6 +23,7 @@ router.register('groups', GroupViewSet)
 
 
 
+
 urlpatterns = [
     # login dll
 
@@ -36,12 +37,15 @@ urlpatterns = [
     path('api/setoran_list/<int:pk>/',setoran_list_detail_view),
     path('api/setoran_list/<int:pk>/update/',setoran_detail_update),
     path('api/setoran_list/<int:pk>/delete/',setoran_detail_delete),
-    path('api/setoran_add_view/',setoran_add_view),
 
     path('api/setoran_date/', ListSetoran.as_view()),
     path('api/setoran_date/<int:filter>/', ListSetoranMSantri),
 
     path('api/setoran_lima/', ListLimaSetoran.as_view()),
+
+    path('api/setoran_day/',SetoranNowDay),
+
+    path('api/kitab_add/<int:pk>/',KitabAddListAPIView),
 
     path('', views.home, name='home'),
     path('ustadz/', views.ustad, name='ustad'),

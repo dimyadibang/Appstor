@@ -1,4 +1,5 @@
 from dataclasses import field
+from pyexpat import model
 from unicodedata import name
 from Setoran.models import Mahasantri, Ustadz, Kitab, Setoran
 from rest_framework import serializers
@@ -46,23 +47,46 @@ class SetoranSerializer(serializers.ModelSerializer):
             "halaman": obj.kitab.halaman,
             "awalan": obj.kitab.awalan
         }
+
+
+class DetailSetoranSerializer(serializers.ModelSerializer):
+    date_created = serializers.DateField(read_only=True, format="%d-%m-%Y")
+    time_created = serializers.TimeField(read_only=True, format="%H:%M:%S")
+    detail_mahasantri = serializers.SerializerMethodField(read_only=True)
+    detail_kitab = serializers.SerializerMethodField(read_only=True)
     
+    class Meta:
+        model = Setoran
+        fields = ['id', 'mahasantri', 'kitab','time_created', 'date_created','nilai','catatan','lulus','detail_mahasantri','detail_kitab', ]
     
+    def get_detail_mahasantri(self, obj):
+    
+        return {
+            "id": obj.mahasantri.id,
+            "name": obj.mahasantri.name,
+            "jenis_kelamin": obj.mahasantri.jk,
+            "status": obj.mahasantri.status,
+        }
+
+    def get_detail_kitab(self, obj):
+        return {
+            "id": obj.kitab.id,
+            "awalan": obj.kitab.awalan,
+            "halaman": obj.kitab.halaman,
+            "fasol": obj.kitab.fasol,
+            "bab": obj.kitab.bab,
+            "isi": obj.kitab.isi,
+        }
+
+
 class PostSetoranSerializer(serializers.ModelSerializer):
-    lulus = serializers.BooleanField(default=False)
+    #lulus = serializers.BooleanField(default=False)
     class Meta:
         model = Setoran
         fields = ['id', 'mahasantri', 'kitab','time_created', 'date_created','nilai','catatan','lulus', ]
 
     def validate(self, data):
-        formsantri = data['mahasantri']
-        formkitab = data['kitab']
-        lulus = data['lulus']
-        kitab_qs = Setoran.objects.filter(mahasantri=formsantri,kitab=formkitab,lulus=lulus)
-        if kitab_qs.exists():
-            raise serializers.ValidationError("Kalimat ini telah di setorkan")
 
-        
         if data['nilai'] == "A":
             data['lulus'] = True
         elif data['nilai'] == "B":
@@ -72,10 +96,16 @@ class PostSetoranSerializer(serializers.ModelSerializer):
         else:
             data['lulus'] = False
         
-        return data
         
+        formsantri = data['mahasantri']
+        formkitab = data['kitab']
+        lulus = data['lulus']
+        kitab_qs = Setoran.objects.filter(mahasantri=formsantri,kitab=formkitab,lulus=True)
+        if kitab_qs.exists():
+            raise serializers.ValidationError("Kalimat ini telah di setorkan")
+        else:
+            return data
 
-        
     
     def validate_mahasantri(self, value):
         if value == None:
